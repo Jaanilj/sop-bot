@@ -2,6 +2,7 @@ import { config } from 'dotenv'
 import { getCommandKey, isCommand } from './commands/commons'
 import helloMessage from './commands/hello'
 import helpMessage from './commands/help'
+import pollMessage from './commands/poll'
 import unknownCommandMessage from './commands/unknown'
 import { client } from './discord'
 
@@ -36,6 +37,10 @@ client.on('message', async (message) => {
     case 'hello':
       await message.reply(helloMessage(message))
       return
+    case 'poll': {
+      await message.reply(pollMessage(message))
+      return
+    }
     default:
       await message.reply(unknownCommandMessage(command))
   }

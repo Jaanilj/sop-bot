@@ -17,15 +17,4 @@ function getCommandKey(message: Message): string {
   return command ?? 'no-command'
 }
 
-function getStyledCommand(command: string): string {
-  return `\`${prefix}${command}\``
-}
-
-export {
-  prefix,
-  color,
-  isCommand,
-  getMessageArgs,
-  getCommandKey,
-  getStyledCommand,
-}
+export { prefix, color, isCommand, getMessageArgs, getCommandKey }
