@@ -1,20 +1,31 @@
 import { Message } from 'discord.js'
-import getCodeBlockString from '../utilities/utilities'
+import { getCodeBlockString } from '../utilities/utilities'
 import { prefix } from './commons'
 
-function getPollOptionNumbers(): string[] {
-  return ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+const getPollNumbers = (function pollNumbersGenerator() {
+  const numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+  return () => numbers
+})()
+
+function getPollOptionNumber(index: number): string {
+  const numbers = getPollNumbers()
+  return numbers[index] ?? '-'
 }
+
+function getPollOptionListItem(index: number, option: string): string {
+  return `${getPollOptionNumber(index)} = ${option}\n`
+}
+
 /**
- * Matches with !poll command syntax that has the form
- * !poll "Poll message" option1, option2, ..., optionN
+ * Matches with `!poll` command syntax that has the form
+ * `!poll "Poll message" option1, option2, ..., optionN`
  */
-function getPollRegexp(): RegExp {
+function getPollRegExp(): RegExp {
   return /^!poll +"([a-zA-Z !,.?]+)" +((?:[^,]+)(?:,[^,]+)+)$/
 }
 
-export default function pollMessage(message: Message): string {
-  const regExp = getPollRegexp()
+function pollMessage(message: Message): string {
+  const regExp = getPollRegExp()
 
   if (!regExp.test(message.content)) {
     return `Poll command syntax ${getCodeBlockString(
@@ -34,12 +45,13 @@ export default function pollMessage(message: Message): string {
   if (pollOptions.length > 10) {
     return `Poll can have at most 10 options. You gave ${pollOptions.length}.`
   }
-  const pollOptionNumbers = getPollOptionNumbers()
-  const pollChoices = pollOptions.map(
-    (option, index) => `${pollOptionNumbers[index]} = ${option}\n`
+  const pollChoices = pollOptions.map((option, index) =>
+    getPollOptionListItem(index, option)
   )
   return `
   Poll: ${pollTitle}
   ${['', ...pollChoices].join('  ').slice(2)}
   `
 }
+
+export { getPollNumbers, pollMessage }

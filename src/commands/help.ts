@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js'
-import getCodeBlockString from '../utilities/utilities'
+import { getCodeBlockString } from '../utilities/utilities'
 import { color, prefix } from './commons'
 
 export default function helpMessage(): MessageEmbed {
